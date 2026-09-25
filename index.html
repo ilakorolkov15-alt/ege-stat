@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЕГЭ: Реальная статистика и скрытые ловушки</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #161f30;
+            --accent-orange: #ff5722;
+            --accent-neon: #00f5d4;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            scroll-behavior: smooth;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(11, 15, 25, 0.8);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+        .logo span {
+            color: var(--accent-orange);
+        }
+        .menu a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .menu a:hover {
+            color: var(--accent-neon);
+        }
+        section {
+            padding: 100px 20px 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .hero-section h1 {
+            font-size: clamp(2.3rem, 5vw, 4.2rem);
+            line-height: 1.1;
+            font-weight: 900;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, #fff 40%, var(--accent-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-section p {
+            font-size: clamp(1.1rem, 2vw, 1.3rem);
+            color: var(--text-muted);
+            max-width: 800px;
+            margin-bottom: 40px;
+        }
+        .btn-primary {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-orange), #ff7849);
+            color: #fff;
+            padding: 18px 36px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 4px 20px rgba(255, 87, 34, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(255, 87, 34, 0.4);
+        }
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800;
+            margin-bottom: 50px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+        }
+        .subject-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .subject-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 245, 212, 0.3);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 15px;
+        }
+        .badge-score {
+            background: rgba(0, 245, 212, 0.1);
+            color: var(--accent-neon);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .card-body p {
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            color: #d1d5db;
+        }
+        .card-body strong {
+            color: #fff;
+        }
+        .tip-box {
+            margin-top: 15px;
+            background: rgba(255, 87, 34, 0.06);
+            border-left: 3px solid var(--accent-orange);
+            padding: 10px 15px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+            color: #e5e7eb;
+        }
+        .checklist-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 35px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            cursor: pointer;
+        }
+        .checkbox-custom {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--accent-orange);
+            border-radius: 6px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+        .step-item.checked .checkbox-custom {
+            background: var(--accent-orange);
+        }
+        .step-item.checked .checkbox-custom::after {
+            content: '✓';
+            color: #fff;
+            font-size: 14px;
+        }
+        .step-item.checked .step-text h4 {
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 40px 20px;
+            background: #080c14;
+            margin-top: 60px;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .team-credits span {
+            color: #fff;
+            font-weight: 600;
+        }
+        @media (max-width: 768px) {
+            .nav-container { flex-direction: column; gap: 10px; }
+            .menu a { margin: 0 10px; }
+            .footer-content { flex-direction: column; gap: 15px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="logo">ЕГЭ: <span>коротко о главном</span></div>
+            <nav class="menu">
+                <a href="#main">Главная</a>
+                <a href="#subjects">Предметы</a>
+                <a href="#plan">План подготовки</a>
+            </nav>
+        </div>
+    </header>
+    <section id="main" class="hero-section">
+        <h1>Реальная статистика и скрытые ловушки 6 популярных предметов</h1>
+        <p>Сводная информация без воды: проходные баллы, количество стобалльников и самые сложные задания на экзамене без рекламных обещаний.</p>
+        <a href="#subjects" class="btn-primary">Перейти к предметам</a>
+    </section>
+        <section id="subjects">
+        <h2 class="section-title">Разбор экзаменов</h2>
+        <div class="grid-container">
+            <!-- Русский -->
+            <div class="subject-card">
+                <div class="card-header">
+                    <h3>Русский язык</h3>
+                    <div class="badge-score">Ср. балл: 61.4</div>
+                </div>
+                <div class="card-body">
+                    <p><strong>Проходной балл:</strong> для аттестата — <b>24</b>, на бюджет — от <b>72</b>.</p>
+                    <p><strong>Стобалльники:</strong> около <b>2600</b> человек (примерно <b>0.4%</b>).</p>
+                    <p><strong>Трудность:</strong> <b>Задание №21</b> (пунктуация) и <b>№26</b> (средства выразительности).</p>
+                    <div class="tip-box"><b>Лайфхак:</b> Разбирайте основы предложений графически — пунктуация держится на структуре, а не на интуиции.</div>
+                </div>
+            </div>
+            <!-- Математика -->
+            <div class="subject-card">
+                <div class="card-header">
+                    <h3>Математика (Профиль)</h3>
+                    <div class="badge-score">Ср. балл: 52.5</div>
+                </div>
+                <div class="card-body">
+                    <p><strong>Проходной балл:</strong> для аттестата — <b>27</b>, на бюджет — от <b>68</b>.</p>
+                    <p><strong>Стобалльники:</strong> около <b>1100</b> человек. Конкуренция огромная.</p>
+                    <p><strong>Трудность:</strong> <b>Задание №18</b> (параметры), <b>№19</b> (числа), а также геометрия в первой части.</p>
+                    <div class="tip-box"><b>Лайфхак:</b> Вторую часть невозможно натаскать за месяц. Начинайте решать параметры параллельно с базовой алгеброй.</div>
+                </div>
+            </div>
+            <!-- Общество -->
+            <div class="subject-card">
+                <div class="card-header">
+                    <h3>Обществознание</h3>
+                    <div class="badge-score">Ср. балл: 55.0</div>
+                </div>
+                <div class="card-body">
+                    <p><strong>Проходной балл:</strong> минимум — <b>42</b>, на бюджет — от <b>75</b>.</p>
+                    <p><strong>Стобалльники:</strong> менее <b>300</b> человек. Предмет обманчиво кажется легким.</p>
+                    <p><strong>Трудность:</strong> <b>Задание №23</b> (Конституция) и <b>№24</b> (план). Блоки «Право» и «Экономика».</p>
+                    <div class="tip-box"><b>Лайфхак:</b> Житейская логика тут мимо. Учите формулировки строго из учебников ФПУ, иначе снимут баллы.</div>
+                </div>
+            </div>
+            <!-- История -->
+            <div class="subject-card">
+                <div class="card-header">
+                    <h3>История</h3>
+                    <div class="badge-score">Ср. балл: 56.2</div>
+                </div>
+                <div class="card-body">
+                    <p><strong>Проходной балл:</strong> минимум — <b>32</b>, на бюджет — от <b>70</b>.</p>
+                    <p><strong>Стобалльники:</strong> около <b>400</b> человек на всю страну.</p>
+                    <p><strong>Трудность:</strong> <b>Задание №18</b> (причины и следствия) и <b>№21</b> (всемирная история).</p>
+                    <div class="tip-box"><b>Лайфхак:</b> Не учите всеобщую историю отдельно. Разбирайте её только через жесткие параллели с событиями в России.</div>
+                </div>
+            </div>
+            <!-- Биология -->
+            <div class="subject-card">
+                <div class="card-header">
+                    <h3>Биология</h3>
+                    <div class="badge-score">Ср. балл: 50.8</div>
+                </div>
+                <div class="card-body">
+                    <p><strong>Проходной балл:</strong> минимум — <b>36</b>, на бюджет — от <b>72</b>.</p>
+                    <p><strong>Стобалльники:</strong> всего <b>70–80</b> человек. Самый низкий средний балл.</p>
+                    <p><strong>Трудность:</strong> <b>Задания №25 и №26</b>. Сложно угадать скрытые формулировки ответов ФИПИ.</p>
+                    <div class="tip-box"><b>Лайфхак:</b> Забудьте общие слова. Пишите ответы максимально академично, задействуя глубокие термины.</div>
+                </div>
+            </div>
+            <!-- Физика -->
+            <div class="subject-card">
+                <div class="card-header">
+                    <h3>Физика</h3>
+                    <div class="badge-score">Ср. балл: 54.8</div>
+                </div>
+                <div class="card-body">
+                    <p><strong>Проходной балл:</strong> минимум — <b>36</b>, на бюджет — от <b>65</b>.</p>
+                    <p><strong>Стобалльники:</strong> около <b>1000</b> человек после недавних упрощений.</p>
+                    <p><strong>Трудность:</strong> <b>Задание №26</b> (качественная задача) и расчетные задачи по механике.</p>
+                    <div class="tip-box"><b>Лайфхак:</b> Зубрежка формул не спасет. Учитесь выводить их из базы — во второй части требуют обоснований.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="plan">
+        <h2 class="section-title">Пошаговый план подготовки</h2>
+        <div class="checklist-container">
+            <div class="step-item" onclick="toggleStep(this)">
+                <div class="checkbox-custom"></div>
+                <div class="step-text">
+                    <h4>Шаг 1. Кодификатор</h4>
+                    <p>Изучаем документы ФИПИ. Проверяем точный список разрешенных формул и терминов.</p>
+                </div>
+            </div>
+            <div class="step-item" onclick="toggleStep(this)">
+                <div class="checkbox-custom"></div>
+                <div class="step-text">
+                    <h4>Шаг 2. Базовая теория</h4>
+                    <p>Разбираем теорию крупными смысловыми блоками и сразу фиксируем в конспекты.</p>
+                </div>
+            </div>
+            <div class="step-item" onclick="toggleStep(this)">
+                <div class="checkbox-custom"></div>
+                <div class="step-text">
+                    <h4>Шаг 3. Тематические тесты</h4>
+                    <p>Прорешиваем по 30-50 профильных заданий на каждую тему. Ошибки разбираем на месте.</p>
+                </div>
+            </div>
+            <div class="step-item" onclick="toggleStep(this)">
+                <div class="checkbox-custom"></div>
+                <div class="step-text">
+                    <h4>Шаг 4. Варианты на время</h4>
+                    <p>Пишем полные пробники со строгим таймером, тренируя скорость заполнения бланков.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="team-credits">Над проектом работали: <span>Илья</span> <span>Влада</span> <span>Юля</span></div>
+            <div class="year">2026 год</div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleStep(element) {
+            element.classList.toggle('checked');
+        }
+    </script>
+</body>
+</html>
